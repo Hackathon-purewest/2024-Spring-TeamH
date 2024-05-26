@@ -1,0 +1,57 @@
+
+
+<div class="channel_wrapper">
+  
+  <div class="add_channel">
+    <form class="add_channel_container" action="{{url_for('add_channel')}}" method="POST">
+      <input
+      class="channel_name"
+      type="text"
+      name="channel_name"
+      />
+      <button type="submit"><span>add</span></button>
+    </form>
+    {% with flashes = get_flashed_messages(category_filter=["channel"]) %}
+    {% for flash in flashes %}
+    <div class="channel_flashes">
+        <p>{{ flash }}</p>
+    </div>
+    {% endfor %}
+    {% endwith %}
+  </div>
+
+  <ul class="scrollable">
+    {% for c in channels %} {% if c.channel_id == channel_id %}
+    <li class="channel_list active">
+    {% else %}
+    <li class="channel_list">
+      {% endif %}
+      <a
+        href="{{url_for('channel', channel_id=c.channel_id)}}"
+      >
+        <span class="icon">
+          <div class="channel_icon">{{ c.channel_name[0].upper() if c.channel_name else '' }}</div>
+        </span>
+        <span class="list_channel_name">{{ c.channel_name }}</span>
+      </a>
+      <form
+          class="delete_channel"
+          action="{{url_for('delete_channel')}}"
+          method="POST"
+          >
+          <input type="hidden" value="{{c.channel_id}}" name="channel_id" />
+          <button class="delete_button" type="submit" onclick="return confirm('チャンネルを削除しても良いですか？');">
+              <ion-icon name="close-outline"></ion-icon>
+          </button>
+      </form>
+      {% with flashes = get_flashed_messages(category_filter=[c.channel_id]) %}
+      {% for flash in flashes %}
+      <div class="channel_flashes">
+          <p>{{ flash }}</p>
+      </div>
+      {% endfor %}
+      {% endwith %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
